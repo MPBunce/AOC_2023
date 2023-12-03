@@ -4,12 +4,12 @@ use std::io::{BufRead, BufReader};
 pub fn pt_two () -> std::io::Result<()> {
 
     let mut sum: i32 = 0;
-    let mut red_min: i32 = 100000;
-    let mut green_min: i32 = 100000;
-    let mut blue_min: i32 = 100000;
+    let mut red_min: i32 = 0;
+    let mut green_min: i32 = 0;
+    let mut blue_min: i32 = 0;
 
     // Open the file for reading
-    let file = File::open("./src/small.txt")?;
+    let file = File::open("./src/input.txt")?;
 
     // Create a buffered reader to read the file
     let reader = BufReader::new(file);
@@ -46,7 +46,7 @@ pub fn pt_two () -> std::io::Result<()> {
                 
                 if let Some(c) = b {
                     let blue_int: i32 = n.split_whitespace().next().unwrap().parse().unwrap();
-                    if blue_int < blue_min {
+                    if blue_int > blue_min {
                         blue_min = blue_int
                     }
 
@@ -54,14 +54,14 @@ pub fn pt_two () -> std::io::Result<()> {
                 }
                 else if let Some(c) = g {
                     let green_int: i32 = n.split_whitespace().next().unwrap().parse().unwrap();
-                    if green_int < green_min {
+                    if green_int > green_min {
                         green_min = green_int
                     }
 
                 }
                 else if let Some(c) = r {
                     let red_int: i32 = n.split_whitespace().next().unwrap().parse().unwrap();
-                    if red_int < red_min {
+                    if red_int > red_min {
                         red_min = red_int
                     }
 
@@ -80,10 +80,9 @@ pub fn pt_two () -> std::io::Result<()> {
         sum += temp;
 
         //Reset
-        red_min = 100000;
-        green_min = 100000;
-        blue_min = 100000;
-        temp = 0;
+        red_min = 0;
+        green_min = 0;
+        blue_min = 0;
 
     }
     println!("{:?}", sum);
