@@ -3,6 +3,9 @@ use std::io::{BufRead, BufReader};
 
 pub fn pt_one () -> std::io::Result<()> {
 
+    let mut sum = 0;
+    let mut sum_two = 0;
+
     let red_max: i32 = 12;
     let green_max: i32 = 13;
     let blue_max: i32 = 14;
@@ -24,30 +27,55 @@ pub fn pt_one () -> std::io::Result<()> {
             }
         };
 
-        println!("{}", line);
+        let split_one: Vec<_> = line.split(": ").collect();
+        let game_char: Vec<_> = split_one[0].split(" ").collect();
+        let game_int: i32 = game_char[1].parse().unwrap();
+        sum_two += game_int;
+        let split_two: Vec<_> = split_one[1].split("; ").collect();
 
-        let games: Vec<&str> = line.split(';').collect();
+        'outer: for n in split_two{
+            let split_three: Vec<_> = n.split(", ").collect();
+            for n in split_three{
 
-        println!("{:?}", &games);
-
-        // Iterate over each game
-        for game in games {
-            if let Some(game_number) = game.split(':').next() {
-                if let Ok(number) = game_number.trim().parse::<usize>() {
-                    // Extract color and number pairs within each game
-                    let pairs: Vec<&str> = game.split(',').collect();
-                    for pair in pairs {
-                        if let Some((number_str, color)) = pair.split_once(' ') {
-                            if let Ok(number) = number_str.trim().parse::<usize>() {
-                                println!("Number: {}, Color: {}", number, color.trim());
-                            }
-                        }
+                let b = n.find("blue");
+                let g = n.find("green");
+                let r = n.find("red");
+                
+                if let Some(c) = b {
+                    let blue_int: i32 = n.split_whitespace().next().unwrap().parse().unwrap();
+                    if blue_int > blue_max {
+                        sum += game_int;
+                        break 'outer;
                     }
+
+                    
+                }
+                else if let Some(c) = g {
+                    let green_int: i32 = n.split_whitespace().next().unwrap().parse().unwrap();
+                    if green_int > green_max {
+                        sum += game_int;
+                        break 'outer;
+                    }
+
+                }
+                else if let Some(c) = r {
+                    let red_int: i32 = n.split_whitespace().next().unwrap().parse().unwrap();
+                    if red_int > red_max {
+                        sum += game_int;
+                        break 'outer;
+                    }
+                }
+                else {
+                    println!("Error");
                 }
             }
         }
-    }
 
+
+
+    }
+    let res = sum_two - sum;
+    println!("Sum: {:?}", res);
     println!("\nDone\n\n");
 
     Ok(())
