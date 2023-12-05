@@ -75,7 +75,7 @@ pub fn pt_two () -> std::io::Result<()> {
         
         if let Some(value) = my_map.get(&i){
            sum += *value;
-           println!("Value 1: {:?}", &value);
+           println!("Value: {:?}", &value);
         } else {
             // Handle the None case, for example:
             println!("No value found for index");
@@ -84,14 +84,14 @@ pub fn pt_two () -> std::io::Result<()> {
 
 
         if let Some(test) = count_map.get(&i){
-            let next_cards = *test as usize;
+            let next_cards = *test as usize +1;
             let temp = 1 + &i;
-
+            println!("Iterate this many time: {:?}", &test);
             for j in temp..next_cards{
 
                 if let Some(value) = my_map.get(&j){
                     sum += *value;
-                    println!("Value 2: {:?}", &value);
+                    println!("iterate: {:?}, Value 2: {:?}",&j, &value);
                 }else {
                     // Handle the None case, for example:
                     println!("No value found for index");
