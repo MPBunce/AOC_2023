@@ -7,7 +7,7 @@ pub fn pt_two () -> std::io::Result<()> {
 
     let mut sum: i32 = 0;
     // Open the file for reading
-    let file = File::open("./src/small.txt")?;
+    let file = File::open("./src/input.txt")?;
 
     // Create a buffered reader to read the file
     let reader = BufReader::new(file);
@@ -43,8 +43,10 @@ pub fn pt_two () -> std::io::Result<()> {
 
     let mut my_map: HashMap<usize, i32> = HashMap::new();
     let mut count_map: HashMap<usize, i32> = HashMap::new();
+    let mut total_cards_map: HashMap<usize, i32> = HashMap::new();
     let mut ticket_sum = 0;
     let mut count = 0;
+    
     for i in 0..mine.len() {
         let n = &mine[i];
 
@@ -61,53 +63,40 @@ pub fn pt_two () -> std::io::Result<()> {
 
             }
         }
+        total_cards_map.insert(i, 1);
+
         my_map.insert(i, ticket_sum);
         count_map.insert(i, count);
         ticket_sum = 0;
         count = 0;
     }
 
-    println!("{:?}", my_map);
     println!("{:?}", count_map);
-    let mut sum: i32 = 0;
+    println!("{:?}", total_cards_map);
+
+    //let mut sum: i32 = 0;
     
     for i in 0..count_map.len() {
         
-        if let Some(value) = my_map.get(&i){
-           sum += *value;
-           println!("Value: {:?}", &value);
-        } else {
-            // Handle the None case, for example:
-            println!("No value found for index");
-        }
-        
+        let num_cards = total_cards_map.get(&i);
+        let iterate_x_time= count_map.get(&i);
+        println!("iterate {:?}", &iterate_x_time);
 
+        for j in 0..*num_cards.unwrap() {
+            println!("test j {:?}", &j);
+            for k in 0..*iterate_x_time.unwrap() {
 
-        if let Some(test) = count_map.get(&i){
-            let next_cards = *test as usize +1;
-            let temp = 1 + &i;
-            println!("Iterate this many time: {:?}", &test);
-            for j in temp..next_cards{
+                let position: usize = (k as i32 + i as i32 + 1) as usize;
 
-                if let Some(value) = my_map.get(&j){
-                    sum += *value;
-                    println!("iterate: {:?}, Value 2: {:?}",&j, &value);
-                }else {
-                    // Handle the None case, for example:
-                    println!("No value found for index");
-                }
-
+                println!("test k {:?}", position);
+                total_cards_map.entry(position).and_modify(|v| *v += 1);
             }
 
-        } else {
-            // Handle the None case, for example:
-            println!("No value found for index ");
         }
-        
 
     }
 
-    
+    let sum: i32 = total_cards_map.values().copied().sum();
     println!("P2 Sum: {:?}", sum);
 
     Ok(())
