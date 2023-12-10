@@ -1,6 +1,6 @@
 #[derive(Clone, Debug)]
 pub struct Map_Range<'a> {
-    pub map_name: &'a str,
-    pub map_lists: Vec<Vec<usize>>
+    pub num: &'a str,
+    pub seen: Vec<Vec<usize>>
 
 }

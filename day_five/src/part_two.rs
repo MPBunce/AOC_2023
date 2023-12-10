@@ -14,25 +14,92 @@ fn read_lines(filename: &str) -> Vec<String> {
 
 pub fn pt_two () -> std::io::Result<()> {
     
-    let mut lines = read_lines("./src/small.txt");
 
-    let mut seeds = &lines[0]
+    let lines = read_lines("./src/small.txt");
+
+    let seeds = &lines[0]
         .split_once(':')
         .unwrap()
         .1
         .trim()
         .split_ascii_whitespace()
-        .map(|s| s.parse::<u64>().unwrap())
-        .collect::<Vec<u64>>();
+        .map(|s| s.parse::<i64>().unwrap())
+        .collect::<Vec<i64>>();
 
-    println!("seeds: {:?}", &seeds);
+    let mut chunked_seeds = seeds.chunks_exact(2)
+        .map(|chunk| (chunk[0], chunk[1]))
+        .collect::<Vec<(i64, i64)>>();
+    println!("{:?}", chunked_seeds);
 
-    for n in seeds {
-        for line in &lines[2..] {
-            println!("seed: {:?} lines: {:?}", n, &line);
+    let mut all_seeds: Vec<i64> = Vec::new();
+
+    for n in chunked_seeds {
+        let total_seeds: Vec<i64> = (n.0..n.0 + n.1 as i64).collect();
+        for s in total_seeds {
+            all_seeds.push(s);
         }
     }
 
-    Ok(())
 
+    let mut locations_vec: Vec<(i64, bool)> = Vec::new();
+    
+    for n in all_seeds {
+        locations_vec.push((n, false));
+    }
+
+    for line in &lines[1..] {
+
+        if line.is_empty(){      
+            continue;
+        } else {
+            if line.contains("map:") {
+                let temp_name: Vec<_> = line.split(" map:").collect();
+                for i in 0..locations_vec.len() {
+                    locations_vec[i].1 = false
+                }
+            } else {
+                let values: Vec<i64> = line
+                    .split_whitespace()
+                    .map(|s| s.parse::<i64>().expect("Failed to parse usize"))
+                    .collect();
+                //println!("{:?}",values);
+
+                let des_range = values[0];
+                let source_range = values[1];
+                let range = values[2];
+
+
+                let destination_map: Vec<i64> = (des_range..des_range + range as i64).collect();
+                //println!("{:?}", destination_map);                
+                let source_map: Vec<i64> = (source_range..source_range + range as i64).collect();
+                //println!("{:?}", source_map); 
+
+                for i in 0..locations_vec.len() {
+                    let temp_seed = locations_vec[i].0;
+                    if let Some(index) = source_map.iter().position(|&x| x == temp_seed) {
+                        if locations_vec[i].1 != true {
+                            locations_vec[i].0 = destination_map[index];
+                            locations_vec[i].1 = true;
+                        }   
+
+                    } else {
+                        //println!("Value {} not found in the vector",temp_seed);
+                        continue;
+                    }                    
+                }
+
+
+
+            }
+        }
+    }
+
+
+    if let Some(min_value) = locations_vec.iter().cloned().min() {
+        println!("Minimum value: {:?}", min_value);
+    } else {
+        println!("Vector is empty");
+    }
+
+    Ok(())
 }

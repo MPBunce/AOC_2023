@@ -17,7 +17,7 @@ fn read_lines(filename: &str) -> Vec<String> {
 
 pub fn pt_one() -> io::Result<()> {
 
-    let lines = read_lines("./src/small.txt");
+    let lines = read_lines("./src/input.txt");
 
     let seeds = &lines[0]
         .split_once(':')
@@ -25,18 +25,18 @@ pub fn pt_one() -> io::Result<()> {
         .1
         .trim()
         .split_ascii_whitespace()
-        .map(|s| s.parse::<usize>().unwrap())
-        .collect::<Vec<usize>>();
+        .map(|s| s.parse::<i64>().unwrap())
+        .collect::<Vec<i64>>();
 
-    println!("seeds: {:?}\n", &seeds);
-    let mut dic_num: i32 = 0;
-    let mut map_name = "";
+    let mut location = seeds.clone();
 
-    let mut maps_vector: Vec<Map_Range> = Vec::new();
-    let mut my_map_range = Map_Range {
-        map_name: "tst",
-        map_lists: Vec::new()
-    };
+    let mut locations_vec: Vec<(i64, bool)> = Vec::new();
+    
+    for n in location {
+        locations_vec.push((n, false));
+    }
+
+    println!("seeds: {:?}\n", locations_vec);
 
     for line in &lines[1..] {
 
@@ -44,71 +44,53 @@ pub fn pt_one() -> io::Result<()> {
             continue;
         } else {
             if line.contains("map:") {
-                maps_vector.push(my_map_range.clone() );
-                dic_num += 1;
                 let temp_name: Vec<_> = line.split(" map:").collect();
-                map_name = temp_name[0];
-                my_map_range.map_name = &map_name;
-                my_map_range.map_lists = Vec::new();
-                continue;
-            } else {
-                let values: Vec<usize> = line
-                    .split_whitespace()
-                    .map(|s| s.parse::<usize>().expect("Failed to parse usize"))
-                    .collect();
-                my_map_range.map_lists.push(values);
-            }
-        }
-    }
-
-    let vector_len = maps_vector.len();
-    let mut locations = seeds.clone();
-
-    for i in 1..vector_len {
-        let value = &maps_vector[i];
-
-        for n in &value.map_lists {
-            let temp = n.clone();
-            let mut destination = temp[0];
-            let mut source = temp[1];
-            let mut range = temp[2];
-
-            let mut destination_range: Vec<usize> = Vec::new();
-            let mut source_range: Vec<usize> = Vec::new();
-
-            destination_range.push(destination);
-            source_range.push(source);
-
-            for i in 0..(range -1){
-                destination += 1;
-                destination_range.push(destination);
-            }
-
-            for i in 0..(range -1){
-                source += 1;
-                source_range.push(source);
-            }
-
-            // println!("Desination {:?}", destination_range);
-            // println!("Source range {:?}", source_range);
-
-            let len_seeds = locations.len();
-            for i in 0..len_seeds{
-                let temp = locations[i];
-                if let Some(position) = source_range.iter().position(|&x| x == temp) {
-                    locations[i] = destination_range[position];
-
-                } else {
-                    continue;
+                for i in 0..locations_vec.len() {
+                    locations_vec[i].1 = false
                 }
+            } else {
+                let values: Vec<i64> = line
+                    .split_whitespace()
+                    .map(|s| s.parse::<i64>().expect("Failed to parse usize"))
+                    .collect();
+                //println!("{:?}",values);
+
+                let des_range = values[0];
+                let source_range = values[1];
+                let range = values[2];
+
+
+                let destination_map: Vec<i64> = (des_range..des_range + range as i64).collect();
+                //println!("{:?}", destination_map);                
+                let source_map: Vec<i64> = (source_range..source_range + range as i64).collect();
+                //println!("{:?}", source_map); 
+
+                for i in 0..locations_vec.len() {
+                    let temp_seed = locations_vec[i].0;
+                    if let Some(index) = source_map.iter().position(|&x| x == temp_seed) {
+                        if locations_vec[i].1 != true {
+                            locations_vec[i].0 = destination_map[index];
+                            locations_vec[i].1 = true;
+                        }   
+
+                    } else {
+                        //println!("Value {} not found in the vector",temp_seed);
+                        continue;
+                    }                    
+                }
+
+
+
             }
-
-
-
         }
-        println!("location: {:?}", locations);
     }
 
+
+    if let Some(min_value) = locations_vec.iter().cloned().min() {
+        println!("Minimum value: {:?}", min_value);
+    } else {
+        println!("Vector is empty");
+    }
 
     Ok(())
 }
