@@ -17,11 +17,40 @@ fn read_lines(filename: &str) -> Vec<String> {
 
 pub fn pt_one() -> io::Result<()> {
 
-    let lines = read_lines("./src/small.txt");
-    for n in lines{
-        println!("{:?}", n);
+    let lines = read_lines("./src/input.txt");
+    let times = &lines[0]
+        .split_once(':')
+        .unwrap()
+        .1
+        .split_ascii_whitespace()
+        .map(|s| s.parse::<usize>().unwrap())
+        .collect::<Vec<usize>>();
+    println!("{:?}", times);
+    let distances = lines[1]
+        .split_once(':')
+        .unwrap()
+        .1
+        .split_ascii_whitespace()
+        .map(|s| s.parse::<usize>().unwrap())
+        .collect::<Vec<usize>>();
+    println!("{:?}", distances);
+    
+    let len = &distances.len();
+
+    let mut data: Vec<(usize, usize)> = Vec::new();
+
+    for i in 0..*len{
+        data.push((times[i], distances[i]));
     }
 
+    let res = result(&data);
+    println!("{:?}", res);
 
     Ok(())
+}
+
+fn result(data: &[(usize, usize)]) -> usize {
+    data.iter()
+        .map(|(time, record)| (0..*time).filter(|x| x * (*time - x) > *record).count())
+        .reduce(|result, count| result * count).unwrap()
 }
