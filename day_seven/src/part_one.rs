@@ -19,7 +19,16 @@ pub fn pt_one() -> io::Result<()> {
 
     let lines = read_lines("./src/input.txt");
 
+    let mut hands: Vec<(String, i32)> = Vec::new();
+
     for n in lines{
+        println!("{:?}", n);
+        let tokens = 
+
+        
+    }
+
+    for n in hands {
         println!("{:?}", n);
     }
 

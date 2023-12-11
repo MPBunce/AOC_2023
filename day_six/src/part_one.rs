@@ -5,8 +5,6 @@ use std::path::Path;
 use std::collections::HashMap;
 use std::vec;
 
-
-
 fn read_lines(filename: &str) -> Vec<String> {
     read_to_string(filename) 
         .unwrap() 
