@@ -46,9 +46,13 @@ fn bubble_sort(arr: &mut Vec<Hand>) {
 
     for i in 0..n {
         for j in 0..n - 1 - i {
-            if arr[j].bid > arr[j + 1].bid {
+            if winning_hand(&arr[j].cards , &arr[j + 1].cards){
                 arr.swap(j, j + 1);
             }
         }
     }
+}
+
+fn winning_hand(hand_one: &String, hand_two: &String) -> bool {
+    return true
 }
