@@ -1,6 +1,8 @@
 mod part_one;
 mod part_two;
 
+mod models;
+
 fn main() {
 
     println!("\n");
