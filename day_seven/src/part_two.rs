@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use crate::models::Hand;
 
 pub fn pt_two() -> io::Result<()> {
-    let lines = read_lines("./src/input.txt");
+    let lines = read_lines("./src/small.txt");
 
     let mut hands: Vec<Hand> = Vec::new();
 
@@ -115,12 +115,13 @@ fn winning_hand(hand_one: &String, hand_two: &String) -> bool {
     if let Some(temp_val) = h2_char.remove(&'J') {
         h2_char.entry(h2_max_char).and_modify(|entry| *entry += temp_val);
     }
-    //println!("{:?}", h2_char);
+    println!("set");
+    println!("{:?}", &h1_char);
+    println!("{:?}", &h2_char);
 
-    //println!("\n");
+    let h1_max = *h1_char.values().max_by_key(|&v| v).unwrap_or(&2);
+    let h2_max = *h2_char.values().max_by_key(|&v| v).unwrap_or(&2);
 
-    let h1_max = *h1_char.values().max_by_key(|&v| v).unwrap();
-    let h2_max = *h2_char.values().max_by_key(|&v| v).unwrap();
 
     let mut h1_hand = HandType::HighCard;
     let mut h2_hand = HandType::HighCard;
@@ -235,7 +236,7 @@ enum CharCardType {
     Eight = 8,
     Nine = 9,
     Ten = 10,
-    Jack = 1,
+    Jack = 11,
     Queen = 12,
     King = 13,
     Ace = 14,

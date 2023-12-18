@@ -7,7 +7,7 @@ use std::vec;
 use crate::models::Hand;
 
 pub fn pt_one() -> io::Result<()> {
-    let lines = read_lines("./src/input.txt");
+    let lines = read_lines("./src/small.txt");
 
     let mut hands: Vec<Hand> = Vec::new();
 
