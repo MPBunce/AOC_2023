@@ -1,13 +1,11 @@
 use std::fs::read_to_string;
-use std::fs::File;
-use std::io::{self, BufRead, BufReader};
+use std::io::{self};
 use std::collections::HashMap;
-use std::vec;
 
 use crate::models::Hand;
 
 pub fn pt_two() -> io::Result<()> {
-    let lines = read_lines("./src/small.txt");
+    let lines = read_lines("./src/input.txt");
 
     let mut hands: Vec<Hand> = Vec::new();
 
@@ -79,46 +77,47 @@ fn winning_hand(hand_one: &String, hand_two: &String) -> bool {
     let h2 = hand_two;
 
     let mut h1_char = HashMap::new();
-    let mut h1_min = char_to_card_type('A').unwrap();
-    let mut h1_min_char = 'A';
+    let mut h1_max = char_to_card_type('2').unwrap();
+    let mut h1_max_char = '2';
 
     for ch in h1.chars() {
 
-        let temp_min = char_to_card_type(ch).unwrap();  
-        if temp_min < h1_min {
-            h1_min = temp_min;
-            h1_min_char = ch
+        let temp_max = char_to_card_type(ch).unwrap();  
+        if temp_max > h1_max {
+            h1_max = temp_max;
+            h1_max_char = ch
         }
 
         *h1_char.entry(ch).or_insert(0) += 1;
     }
+    //println!("{:?}", h1_char);
     if let Some(temp_val) = h1_char.remove(&'J') {
-        h1_char.entry(h1_min_char).and_modify(|entry| *entry += temp_val);
+        h1_char.entry(h1_max_char).and_modify(|entry| *entry += temp_val);
     }
-
+    //println!("{:?}", h1_char);
 
     
     let mut h2_char = HashMap::new();
-    let mut h2_min = char_to_card_type('A').unwrap();
-    let mut h2_min_char = 'A';
+    let mut h2_max = char_to_card_type('2').unwrap();
+    let mut h2_max_char = '2';
 
     for ch in h2.chars() {
 
-        let temp_min = char_to_card_type(ch).unwrap();  
-        if temp_min < h2_min {
-            h2_min = temp_min;
-            h2_min_char = ch
+        let temp_max = char_to_card_type(ch).unwrap();  
+        if temp_max > h2_max {
+            h2_max = temp_max;
+            h2_max_char = ch
         }
 
         *h2_char.entry(ch).or_insert(0) += 1;
     }
+    //println!("{:?}", h2_char);
     if let Some(temp_val) = h2_char.remove(&'J') {
-        h2_char.entry(h2_min_char).and_modify(|entry| *entry += temp_val);
+        h2_char.entry(h2_max_char).and_modify(|entry| *entry += temp_val);
     }
+    //println!("{:?}", h2_char);
 
-
-
-
+    //println!("\n");
 
     let h1_max = *h1_char.values().max_by_key(|&v| v).unwrap();
     let h2_max = *h2_char.values().max_by_key(|&v| v).unwrap();
