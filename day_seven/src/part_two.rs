@@ -109,8 +109,6 @@ fn winning_hand(hand_one: &String, hand_two: &String) -> bool {
 
     }
 
-
-
     let h1_max = *h1_char.values().max_by_key(|&v| v).unwrap();
     let h2_max = *h2_char.values().max_by_key(|&v| v).unwrap();
 
