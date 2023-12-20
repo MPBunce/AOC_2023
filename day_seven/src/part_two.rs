@@ -44,7 +44,7 @@ fn bubble_sort(arr: &mut Vec<Hand>) {
     let n = arr.len();
 
     for i in 0..n {
-        for j in 0..n - 1 - i {
+        for j in 0..(n - 1 - i) {
             if winning_hand(&arr[j].cards , &arr[j + 1].cards){
                 arr.swap(j, j + 1);
             }
@@ -76,47 +76,43 @@ fn winning_hand(hand_one: &String, hand_two: &String) -> bool {
     let h1 = hand_one;
     let h2 = hand_two;
 
+    println!("\n");
+    println!("{:?}", h1);
+    println!("{:?}", h2);
+
+    
     let mut h1_char = HashMap::new();
-    let mut h1_max = char_to_card_type('2').unwrap();
-    let mut h1_max_char = '2';
     for ch in h1.chars() {
-
-        let temp_max = char_to_card_type(ch).unwrap();  
-        if temp_max > h1_max {
-            h1_max = temp_max;
-            h1_max_char = ch
-        }
-
         *h1_char.entry(ch).or_insert(0) += 1;
     }
     if let Some(temp_val) = h1_char.remove(&'J') {
-        h1_char.entry(h1_max_char).and_modify(|entry| *entry += temp_val);
-    }
-
-    
-    let mut h2_char = HashMap::new();
-    let mut h2_max = char_to_card_type('2').unwrap();
-    let mut h2_max_char = '2';
-    for ch in h2.chars() {
-
-        let temp_max = char_to_card_type(ch).unwrap();  
-        if temp_max > h2_max {
-            h2_max = temp_max;
-            h2_max_char = ch
+        if let Some(max_char) = h1_char.iter().max_by_key(|&(_, count)| count){
+            let temp = *max_char.0;
+            h1_char.entry(temp).and_modify(|entry| *entry += temp_val);  
+        } else {
+            *h1_char.entry('A').or_insert(0) += temp_val;                    
         }
 
+    }
+
+    let mut h2_char = HashMap::new();
+    for ch in h2.chars() {
         *h2_char.entry(ch).or_insert(0) += 1;
     }
     if let Some(temp_val) = h2_char.remove(&'J') {
-        h2_char.entry(h2_max_char).and_modify(|entry| *entry += temp_val);
+        if let Some(max_char) = h2_char.iter().max_by_key(|&(_, count)| count){
+            let temp = *max_char.0;
+            h2_char.entry(temp).and_modify(|entry| *entry += temp_val);  
+        } else {
+            *h2_char.entry('A').or_insert(0) += temp_val;                    
+        }
+
     }
 
 
 
-
-
-    let h1_max = *h1_char.values().max_by_key(|&v| v).unwrap_or(&2);
-    let h2_max = *h2_char.values().max_by_key(|&v| v).unwrap_or(&2);
+    let h1_max = *h1_char.values().max_by_key(|&v| v).unwrap();
+    let h2_max = *h2_char.values().max_by_key(|&v| v).unwrap();
 
     let mut h1_hand = HandType::HighCard;
     let mut h2_hand = HandType::HighCard;
